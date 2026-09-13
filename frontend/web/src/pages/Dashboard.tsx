@@ -90,7 +90,7 @@ export function Dashboard() {
             {' '}{orgPolicy.actions.low}
           </p>
         </div>
-        <Link to="/settings" className="btn btn-ghost btn-sm">
+        <Link to="/settings" className="btn btn-ghost btn-sm ml-auto">
           <Settings className="w-3.5 h-3.5" /> Settings
         </Link>
       </div>

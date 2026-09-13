@@ -201,6 +201,8 @@ export interface HealthResponse {
   version: string;
   database?: string | null;
   ml_service?: string | null;
+  model_source?: string | null;
+  device?: string | null;
 }
 
 // ── UI State ─────────────────────────────────────────────────────────

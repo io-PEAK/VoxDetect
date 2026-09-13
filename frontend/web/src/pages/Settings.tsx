@@ -18,7 +18,7 @@ const policyOptions: SelectOption[] = [
 
 export function Settings() {
   const { org, setOrg } = useOrganization();
-  const { health } = useHealthCheck();
+  const { health, loading } = useHealthCheck();
   const { fusion, setSignal } = useSignalSettings();
   const policy = ORG_CONFIGS[org];
 
@@ -83,39 +83,51 @@ export function Settings() {
             <h2 className="text-sm font-semibold text-[rgb(var(--text-primary))]">Endpoints</h2>
           </div>
 
-          <div className="text-xs space-y-3">
+          <div className="space-y-3 text-xs">
             <div>
               <span className="text-[rgb(var(--text-muted))] block mb-1">REST API</span>
-              <span className="font-mono text-[rgb(var(--text-primary))] p-2 rounded bg-[var(--hover-bg)] border border-[rgb(var(--border-subtle))] block">
-                {import.meta.env.VITE_API_URL || 'http://localhost:8000'}
-              </span>
-            </div>
-            <div>
-              <span className="text-[rgb(var(--text-muted))] block mb-1">WebSocket</span>
-              <span className="font-mono text-[rgb(var(--text-primary))] p-2 rounded bg-[var(--hover-bg)] border border-[rgb(var(--border-subtle))] block">
-                {import.meta.env.VITE_WS_URL || 'ws://localhost:8000'}/v1/stream
-              </span>
-            </div>
-            <div className="pt-2 border-t border-[rgb(var(--border-subtle))] space-y-1">
-              <div className="flex justify-between">
-                <span className="text-[rgb(var(--text-muted))]">Version</span>
-                <span className="font-mono text-[rgb(var(--text-primary))]">{health?.version || 'N/A'}</span>
+              <div className="p-2.5 rounded-md bg-[var(--hover-bg)] font-mono text-[rgb(var(--text-secondary))] truncate">
+                http://localhost:8000
               </div>
+            </div>
+
+            <div>
+              <span className="text-[rgb(var(--text-muted))] block mb-1">Live WebSocket</span>
+              <div className="p-2.5 rounded-md bg-[var(--hover-bg)] font-mono text-[rgb(var(--text-secondary))] truncate">
+                ws://localhost:8000/ws/live
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-[rgb(var(--border-subtle))] flex items-center justify-between">
+              <span className="text-[rgb(var(--text-secondary))]">Backend Health</span>
+              <span className={`flex items-center gap-1.5 font-medium ${
+                health?.status === 'ok' ? 'text-[rgb(var(--status-online))]' : loading ? 'text-[rgb(var(--text-muted))]' : 'text-[rgb(var(--status-offline))]'
+              }`}>
+                <span className={`w-2 h-2 rounded-full ${
+                  health?.status === 'ok' ? 'bg-[rgb(var(--status-online))]' : loading ? 'bg-[rgb(var(--text-muted))]' : 'bg-[rgb(var(--status-offline))]'
+                }`} />
+                {health?.status === 'ok' ? 'Healthy' : loading ? 'Checking…' : 'Unreachable'}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Fusion toggles */}
+      {/* Signal fusion config */}
       <div className="card">
         <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[rgb(var(--border-subtle))]">
           <Activity className="w-4 h-4 text-[rgb(var(--accent-soft))]" />
-          <h2 className="text-sm font-semibold text-[rgb(var(--text-primary))]">Multi-Signal Fusion</h2>
+          <div>
+            <h2 className="text-sm font-semibold text-[rgb(var(--text-primary))]">Multi-Signal Fusion</h2>
+            <p className="text-xs text-[rgb(var(--text-muted))] mt-0.5">
+              Configure which detection signals contribute to the fused risk score.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {signalRows.map((sig) => {
-            const enabled = fusion[sig.key];
+            const enabled = sig.alwaysOn || fusion[sig.key];
             return (
               <div
                 key={sig.key}

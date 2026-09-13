@@ -13,7 +13,8 @@ import { useHealthCheck } from '@/hooks/useHealthCheck';
 import { Select } from '@/components/ui/Select';
 import type { SelectOption } from '@/components/ui/Select';
 import { ExportReportModal } from './ExportReportModal';
-import { ShieldCheck, Plus, UserPlus } from 'lucide-react';
+import { Plus, UserPlus } from 'lucide-react';
+import { VoxDetectLogo } from '@/components/common/VoxDetectLogo';
 import { Classic as ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Tooltip } from '@/components/ui/Tooltip';
 import { NotificationIcon, DownloadDoneIcon } from '@/components/ui/AnimatedIcons';
@@ -26,7 +27,6 @@ const orgOptions: SelectOption[] = [
 ];
 
 export function TopBar() {
-
   const { org, setOrg } = useOrganization();
   const { theme, toggleTheme } = useTheme();
   const { toasts } = useAlertContext();
@@ -37,8 +37,9 @@ export function TopBar() {
     if (toasts.length > 0) setUnread(true);
   }, [toasts.length]);
 
-  const { health } = useHealthCheck(30000);
+  const { health, loading } = useHealthCheck(30000);
   const isOnline = health?.status === 'ok';
+  const isOffline = !loading && !isOnline;
   const navigate = useNavigate();
 
   const [exportOpen, setExportOpen] = useState(false);
@@ -48,15 +49,10 @@ export function TopBar() {
     <header className="shrink-0 overflow-x-hidden select-none">
       {/* Row 1: Logo, Org selector, Status */}
       <div className="h-12 px-4 flex items-center justify-between">
-        {/* Left: Logo + wordmark */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[rgb(var(--accent))] flex items-center justify-center shadow-md">
-            <ShieldCheck className="w-4 h-4 text-white" strokeWidth={2.2} />
-          </div>
-          <span className="text-[15px] font-semibold tracking-tight text-[rgb(var(--text-primary))]">
-            VoxDetect
-          </span>
-        </div>
+        {/* Left: Logo (icon only, no wordmark) */}
+        <Link to="/dashboard" className="hidden md:flex items-center -ml-2 group transition-opacity hover:opacity-90">
+          <VoxDetectLogo size={44} className="translate-y-[6px] sm:translate-y-[8px] md:translate-y-[10px] lg:translate-y-[14px]" />
+        </Link>
 
         {/* Center: Org selector */}
         <div className="flex items-center gap-2.5">
@@ -78,11 +74,11 @@ export function TopBar() {
           <span className="flex items-center gap-1.5 mr-1">
             <span
               className={`w-2 h-2 rounded-full ${
-                isOnline ? 'bg-[rgb(var(--status-online))]' : 'bg-[rgb(var(--status-offline))]'
+                isOnline ? 'bg-[rgb(var(--status-online))]' : isOffline ? 'bg-[rgb(var(--status-offline))]' : 'bg-[rgb(var(--text-muted))]'
               }`}
             />
             <span className="text-[11px] font-mono text-[rgb(var(--text-muted))]">
-              {isOnline ? 'ONLINE' : 'OFFLINE'}
+              {isOnline ? 'ONLINE' : isOffline ? 'OFFLINE' : 'CHECKING'}
             </span>
           </span>
 
@@ -149,20 +145,42 @@ export function TopBar() {
           </button>
         </div>
 
-        {/* Right: Model status pill */}
+        {/* Right: Detection mode pill — live from /v1/health */}
         <div className="flex-1 flex justify-end">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[var(--hover-bg)] text-xs">
-            <span className="font-mono text-[rgb(var(--text-muted))]">
-              wav2vec2-XLSR
-            </span>
-            <span className="font-mono text-[rgb(var(--accent-soft))] font-medium">
-              base
-            </span>
-            <span className="w-px h-3 bg-[rgb(var(--border-subtle))]" />
-            <span className="font-mono text-[rgb(var(--text-muted))]">
-              0.7s
-            </span>
-          </div>
+          {(() => {
+            const mlOk = health?.ml_service === 'ok';
+            const device = health?.device || '';
+            const gpu = isOnline && mlOk && device.toLowerCase().includes('cuda');
+            const cpu = isOnline && mlOk && !gpu;
+            const dot = gpu
+              ? 'bg-[rgb(var(--status-online))]'
+              : cpu
+              ? 'bg-[rgb(var(--risk-medium))]'
+              : 'bg-[rgb(var(--status-offline))]';
+            const label = gpu
+              ? 'GPU · CUDA'
+              : cpu
+              ? 'CPU'
+              : 'OFFLINE';
+            const latency = gpu ? '0.7s' : cpu ? '~5-10s' : '—';
+            return (
+              <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-[var(--hover-bg)] text-xs">
+                <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
+                <span className="hidden md:inline text-[9px] font-sans uppercase tracking-wider text-[rgb(var(--text-muted))]">
+                  Detection
+                </span>
+                <span className="hidden md:inline w-px h-3 bg-[rgb(var(--border-subtle))]" />
+                <span className={`font-mono font-semibold ${
+                  gpu ? 'text-[rgb(var(--status-online))]' : cpu ? 'text-[rgb(var(--risk-medium))]' : 'text-[rgb(var(--status-offline))]'
+                }`}>
+                  {label}
+                </span>
+                <span className="whitespace-nowrap font-mono text-[rgb(var(--text-muted))]">
+                  {latency}
+                </span>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
