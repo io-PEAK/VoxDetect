@@ -28,15 +28,15 @@ export function AudioVisualizer({ active, band, flagged, level = 0 }: AudioVisua
 
   const capsuleClass = active
     ? tone === 'risk'
-      ? 'border-[rgba(239,68,68,0.35)] bg-[rgba(239,68,68,0.12)] shadow-[0_0_32px_-6px_rgba(239,68,68,0.5)]'
-      : 'border-[rgba(20,184,166,0.35)] bg-[rgba(20,184,166,0.12)] shadow-[0_0_32px_-6px_rgba(20,184,166,0.5)]'
-    : 'border-[rgb(var(--border-subtle))] bg-[var(--hover-bg)]';
+      ? 'border-[rgba(239,68,68,0.55)] bg-[rgba(239,68,68,0.12)] shadow-[0_0_32px_-6px_rgba(239,68,68,0.5)]'
+      : 'border-[rgba(20,184,166,0.55)] bg-[rgba(20,184,166,0.12)] shadow-[0_0_32px_-6px_rgba(20,184,166,0.5)]'
+    : 'border-[rgb(var(--border-subtle))] bg-[var(--hover-bg)] group-hover:border-[rgb(var(--accent))/0.45] group-hover:bg-[rgb(var(--accent))/0.08] group-hover:shadow-[0_0_32px_-6px_rgba(20,184,166,0.35)] transition-all duration-200';
 
   const micClass = active
     ? tone === 'risk'
       ? 'text-[rgb(var(--risk-critical))]'
       : 'text-[rgb(var(--accent-soft))]'
-    : 'text-[rgb(var(--text-muted))]';
+    : 'text-[rgb(var(--text-muted))] group-hover:text-[rgb(var(--accent))] transition-colors duration-200';
 
   const barClass =
     tone === 'risk'
@@ -70,7 +70,9 @@ export function AudioVisualizer({ active, band, flagged, level = 0 }: AudioVisua
         </div>
       </div>
 
-      {/* Equalizer — flat when quiet, dances with the voice */}
+      {/* Equalizer — flat when quiet, dances with the voice. Bars keep a
+          time-based scaleY pulse so they stay visibly alive while monitoring
+          even when the mic level plateaus (no freezes after a score arrives). */}
       <div className="flex items-end gap-[5px] h-10" aria-hidden="true">
         {Array.from({ length: BAR_COUNT }).map((_, i) => {
           // Per-bar phase so bars rise independently
@@ -80,8 +82,8 @@ export function AudioVisualizer({ active, band, flagged, level = 0 }: AudioVisua
           return (
             <span
               key={i}
-              className={`w-[5px] rounded-full ${barClass} transition-all duration-[60ms]`}
-              style={{ height: `${h}px` }}
+              className={`w-[5px] rounded-full ${barClass} transition-all duration-[60ms] ${active ? 'vox-bar' : ''}`}
+              style={{ height: `${h}px`, animationDelay: `${i * 55}ms` }}
             />
           );
         })}

@@ -53,11 +53,19 @@ export function useMicrophone(options: UseMicrophoneOptions) {
 
     setStatus('requesting');
     try {
+      // Create the AudioContext synchronously inside the click gesture so it
+      // starts in the "running" state (Chrome suspends contexts created after
+      // an async gap). MediaRecorder keeps producing chunks either way, but
+      // the analyser would otherwise read silence — freezing the live bars.
+      const ctx = new AudioContext();
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       streamRef.current = stream;
 
       // Set up analyser for visualisation
-      const ctx = new AudioContext();
       const source = ctx.createMediaStreamSource(stream);
       const analyser = ctx.createAnalyser();
       analyser.fftSize = 256;

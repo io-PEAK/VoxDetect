@@ -119,13 +119,20 @@ export function LiveCall() {
                   <button
                     onClick={stopMonitoring}
                     title="Stop monitoring"
-                    className="cursor-pointer"
+                    className="cursor-pointer group p-2 -m-2 rounded-2xl outline-none focus:outline-none focus-visible:outline-none"
                     aria-label="Stop monitoring"
                   >
                     <AudioVisualizer active={isMonitoring} band={band} flagged={flagged} level={audioLevel} />
                   </button>
                 ) : (
-                  <AudioVisualizer active={false} band={band} flagged={flagged} level={0} />
+                  <button
+                    onClick={startMonitoring}
+                    title="Start monitoring"
+                    className="cursor-pointer group p-2 -m-2 rounded-2xl outline-none focus:outline-none focus-visible:outline-none"
+                    aria-label="Start monitoring"
+                  >
+                    <AudioVisualizer active={false} band={band} flagged={flagged} level={0} />
+                  </button>
                 )}
                 <RiskGauge score={displayScore} band={band} size={160} showLabel={false} />
               </div>
@@ -144,7 +151,7 @@ export function LiveCall() {
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-[rgb(var(--text-secondary))] leading-snug text-center min-h-[15px]">
+                  <span className="text-xs text-[rgb(var(--text-secondary))] leading-snug text-center min-h-[15px] mt-0.5">
                     {band ? getBandSubtext(band) : 'Awaiting analysis'}
                   </span>
                 </div>
