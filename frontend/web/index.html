@@ -2,17 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/voxdetect-icon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/voxdetect-icon.svg?v=4" />
+    <link rel="shortcut icon" href="/voxdetect-icon.svg?v=4" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="VoxDetect — Real-time AI voice cloning detection and prevention for enterprise security." />
-    <meta name="theme-color" content="#131314" />
-    <title>VoxDetect — Voice Authenticity Monitor</title>
+    <meta name="theme-color" content="#f0f0f3" />
+    <title>VoxDetect</title>
     <script>
       (function () {
         try {
           var t = localStorage.getItem('voxdetect-theme');
           var root = document.documentElement;
-          if (t === 'light') root.classList.add('light');
+          if (t !== 'dark') root.classList.add('light');
         } catch (e) {}
       })();
     </script>

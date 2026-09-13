@@ -4,7 +4,8 @@
  * Theme model: both `.dark` and `.light` classes are managed here so that
  *   - CSS token overrides (`.light { --… }` / `:root` dark defaults) work, and
  *   - Tailwind `dark:` variants (darkMode: 'class') only apply in dark mode.
- *   - `<html>` starts with NO class (dark is the default); we toggle to match.
+ *   - `<html>` starts with NO class (light is the default; index.html pre-applies
+ *     `.light` before paint unless dark is stored); we toggle to match.
  * Color transitions are driven globally by a permanent rule in index.css, so
  * no transient class juggling is needed during a switch.
  */
@@ -29,7 +30,7 @@ const THEME_CLASSES: Record<Theme, string> = {
 function getInitialTheme(): Theme {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  return 'dark';
+  return 'light';
 }
 
 function applyThemeClass(theme: Theme) {

@@ -47,7 +47,6 @@ export function useHealthCheck(intervalMs = 30000) {
         }
       }
     } catch {
-      const wasOnline = healthyRef.current;
       healthyRef.current = false;
       setState((prev) => ({
         ...prev,
@@ -55,12 +54,13 @@ export function useHealthCheck(intervalMs = 30000) {
         error: 'VoxDetect API is offline.',
         lastChecked: Date.now(),
       }));
-      // Just went offline — switch to fast retry so we recover instantly.
-      if (wasOnline) {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = setInterval(check, 3000);
-        }
+      // Retry fast (every 3s) on ANY failure — including the very first
+      // check while the backend is still booting — so the status flips to
+      // online as soon as it becomes reachable, instead of waiting out the
+      // slow poll cycle for the next try.
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(check, 3000);
       }
     }
   }, [intervalMs]);

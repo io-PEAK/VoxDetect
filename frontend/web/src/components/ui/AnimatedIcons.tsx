@@ -80,6 +80,7 @@ export function NotificationIcon({ size = 16, color = 'currentColor', className,
       <path d="M28 16a8 8 0 00-16 0c0 8-4 10-4 10h24s-4-2-4-10" stroke={color} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
       <path d="M17.5 30a3 3 0 005 0" stroke={color} strokeWidth={2.5} strokeLinecap="round" />
       <motion.circle cx="28" cy="10" r="5" fill="rgb(var(--risk-critical))"
+        initial={{ scale: 0, opacity: 0 }}
         animate={notif ? { scale: [0, 1.3, 1], opacity: 1 } : { scale: 0, opacity: 0 }}
         transition={{ duration: 0.4, ease: spring }}
       />
