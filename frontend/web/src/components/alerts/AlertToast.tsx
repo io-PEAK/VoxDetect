@@ -90,7 +90,7 @@ export function AlertToast({ toast, leaving = false, onDismiss }: Props) {
       <button
         onClick={() => onDismiss(toast.id)}
         aria-label="Dismiss notification"
-        className="absolute -top-1 -right-1 z-10 h-5 w-5 flex items-center justify-center rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary))] hover:bg-[var(--hover-bg-strong)] transition-colors"
+        className="absolute -top-1 -right-1 z-10 h-5 w-5 flex items-center justify-center rounded-full border border-[rgb(var(--border))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--text-muted))] hover:text-[rgb(var(--text-primary))] hover:border-[rgb(var(--border-strong))] hover:bg-[rgb(var(--bg-card-rgb))] transition-colors"
       >
         <X className="w-3 h-3" />
       </button>

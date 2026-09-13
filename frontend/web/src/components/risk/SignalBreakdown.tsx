@@ -71,7 +71,7 @@ export function SignalBreakdown({ signals }: Props) {
                   </span>
                 )}
                 {inVerdict && !sig.decisive && (
-                  <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[rgba(255,255,255,0.05)] text-[rgb(var(--text-muted))]">
+                  <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[rgb(var(--accent))/0.15] text-[rgb(var(--accent-soft))] border border-[rgb(var(--accent))/0.3]">
                     In verdict
                   </span>
                 )}

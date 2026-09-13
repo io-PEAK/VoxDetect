@@ -32,7 +32,14 @@ export interface ApiError {
 function normalizeError(err: any): ApiError {
   if (axios.isAxiosError(err)) {
     const status = err.response?.status ?? 0;
-    const detail = err.response?.data?.detail;
+    const body = err.response?.data;
+    // Backend structured errors: { "error": { code, message } }
+    const structured = body?.error;
+    if (structured && typeof structured === 'object' && 'code' in structured) {
+      return { code: structured.code, message: structured.message, status };
+    }
+    // Legacy/inline detail: "detail": { code, message } | "string"
+    const detail = body?.detail;
     if (detail && typeof detail === 'object' && 'code' in detail) {
       return { code: detail.code, message: detail.message, status };
     }
