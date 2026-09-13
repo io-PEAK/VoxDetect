@@ -29,8 +29,8 @@ export function App() {
             <AlertProvider>
               <Routes>
                 <Route element={<AppShell />}>
-                  <Route path="/" element={<Navigate to="/home" replace />} />
-                  <Route path="/home" element={<Dashboard />} />
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/live-call" element={<LiveCall />} />
                   <Route path="/analyze" element={<Analyze />} />
                   <Route path="/voiceprints" element={<Voiceprints />} />
@@ -38,8 +38,8 @@ export function App() {
                   <Route path="/audit" element={<Audit />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/privacy" element={<Privacy />} />
-                  <Route path="*" element={<NotFound />} />
                 </Route>
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </AlertProvider>
           </SignalSettingsProvider>
