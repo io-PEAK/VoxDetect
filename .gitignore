@@ -77,3 +77,6 @@ script.md
 qa.md
 # TypeScript incremental build cache
 frontend/web/*.tsbuildinfo
+
+
+.vercel
