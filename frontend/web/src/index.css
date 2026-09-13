@@ -373,10 +373,37 @@ select.input {
   0%, 100% { transform: scaleY(0.25); }
   50%      { transform: scaleY(1); }
 }
+.vox-bar {
+  transform-origin: bottom;
+  animation: vox-bar 1.15s ease-in-out infinite;
+}
 
 /* ── Reduced motion ────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .btn, .card { transition: none !important; }
   .gauge-arc, .score-number, .signal-bar-fill, .alert-enter { transition: none !important; }
   * { scroll-behavior: auto !important; }
+}
+
+/* ── VoxDetect branded loader (equalizer bars pulse) ─────────── */
+.vox-load-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vox-load 1.1s ease-in-out infinite;
+}
+.vox-load-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vox-load-node 1.1s ease-in-out infinite;
+}
+@keyframes vox-load {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+  50%      { transform: scaleY(1); opacity: 1; }
+}
+@keyframes vox-load-node {
+  0%, 100% { transform: scale(0.75); opacity: 0.4; }
+  50%      { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vox-load-bar, .vox-load-node { animation: none !important; }
 }
